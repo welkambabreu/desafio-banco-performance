@@ -1,0 +1,10 @@
+{
+  "valid": {
+    "username": "ktesteqa",
+    "password": "123456"
+  },
+  "invalid": {
+    "username": "ktesteqa",
+    "password": "senha_errada_123"
+  }
+}

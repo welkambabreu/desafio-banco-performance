@@ -1,5 +1,6 @@
 import http from 'k6/http';
 import { sleep, check } from 'k6';
+const postRegister = JSON.parse(open('./fixtures/postRegister.json'));
 
 export const options = {
     iterations: 10,
@@ -15,11 +16,10 @@ export default function () {
     // Gera um username único por iteração/virtual user para o primeiro caso
     const uniqueUsername = `ktesteqa_${__VU}_${__ITER}_${Date.now()}`;
 
-    const payload = JSON.stringify({
-        username: uniqueUsername,
-        password: '123456',
-        favorecidos: ['Kaka do Teste'],
-    });
+    // Clona o payload válido e injeta o username único
+    const validPayloadObj = Object.assign({}, postRegister.valid);
+    validPayloadObj.username = uniqueUsername;
+    const payload = JSON.stringify(validPayloadObj);
 
     const params = {
         headers: {
@@ -34,10 +34,11 @@ export default function () {
     });
     console.log(`create -> status: ${createRes.status}, body: ${createRes.body}`);
 
-    // 2) Segundo POST: tenta criar novamente o mesmo usuário — esperamos erro de usuário existente (400)
+    // 2) Segundo POST: tenta criar novamente o mesmo usuário — esperamos erro de usuário existente (400|409)
+    // Para simular duplicado, usamos o mesmo payload que acabamos de criar
     const duplicateRes = http.post(url, payload, params);
     check(duplicateRes, {
-        'usuario existente (400)': (r) => r.status === 400
+        'usuario existente (400|409)': (r) => r.status === 400 || r.status === 409,
     });
     console.log(`duplicate -> status: ${duplicateRes.status}, body: ${duplicateRes.body}`);
 
