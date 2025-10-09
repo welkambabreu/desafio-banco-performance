@@ -1,0 +1,12 @@
+{
+  "valid": {
+    "from": "julio",
+    "to": "priscila",
+    "value": 100.0
+  },
+  "invalid": {
+    "from": "priscila",
+    "to": "yyyyy",
+    "value": -10
+  }
+}
