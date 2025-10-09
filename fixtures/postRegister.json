@@ -1,5 +1,16 @@
 {
-    "username": "uniqueUsername",
+  "valid": {
+    "username": "ktesteqa",
     "password": "123456",
-    "favorecidos": "['Kaka do Teste']"
+    "favorecidos": [
+      "Kaka do Teste"
+    ]
+  },
+  "duplicate": {
+    "username": "ktesteqa",
+    "password": "123456",
+    "favorecidos": [
+      "Kaka do Teste"
+    ]
+  }
 }

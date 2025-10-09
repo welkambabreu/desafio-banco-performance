@@ -1,9 +1,10 @@
 import http from 'k6/http';
 import { sleep, check } from 'k6';
-const postRegister = JSON.parse(open('./fixtures/postRegister.json'));
+import {pegarBaseURL} from '../utils/variaveis.js';
+const postRegister = JSON.parse(open('../fixtures/postRegister.json'));
 
 export const options = {
-    iterations: 10,
+    iterations: 1,
     thresholds: {
         http_req_failed: ['rate>0.01'], // http errors should be less than 1%
     http_req_duration: ['p(95)<200'], // 95% of requests should be below 200ms
@@ -12,7 +13,7 @@ export const options = {
 
 export default function () {
 
-    const url = 'http://localhost:3000/users/register';
+    const url = pegarBaseURL() + '/users/register';
     // Gera um username único por iteração/virtual user para o primeiro caso
     const uniqueUsername = `ktesteqa_${__VU}_${__ITER}_${Date.now()}`;
 

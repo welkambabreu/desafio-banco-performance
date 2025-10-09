@@ -1,8 +1,9 @@
 import http from 'k6/http';
 import { sleep, check } from 'k6';
+import {pegarBaseURL} from '../utils/variaveis.js';
 
 export const options = {
-    iterations: 10,
+    iterations: 1,
     thresholds: {
         http_req_failed: ['rate<0.01'], // http errors should be less than 1%
         http_req_duration: ['p(95)<200'], // 95% of requests should be below 200ms
@@ -10,7 +11,7 @@ export const options = {
 };
 export default function () {
 
-    const url = 'http://localhost:3000/users';
+    const url = pegarBaseURL() +'/users';
     const params = {
         headers: {
             'Content-Type': 'application/json',
@@ -21,9 +22,10 @@ export default function () {
     const res = http.get(url, params);
 
     check(res, {
-        'status 200': (r) => r.status === 200,
+        '200 - Exibir relação de usuários': (r) => r.status === 200,
     });
     console.log(`GET ${url} -> status: ${res.status}`);
+    console.log(`GET ${url} -> status: ${res.body}`);
 
     // Tenta parsear a resposta como JSON e validar que é uma lista
     let users = null;

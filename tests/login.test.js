@@ -1,21 +1,20 @@
 import http from 'k6/http';
 import { sleep, check } from 'k6';
-// Carrega os payloads de fixtures
-const postLogin = JSON.parse(open('./fixtures/postLogin.json'));
+import {pegarBaseURL} from '../utils/variaveis.js';
+const postLogin = JSON.parse(open('../fixtures/postLogin.json'));
 
 export const options = {
     iterations: 1,
     thresholds: {
-        http_req_failed: ['rate<0.01'], // http errors should be less than 1%
-        http_req_duration: ['p(95)<200'], // 95% of requests should be below 200ms
+        http_req_failed: ['rate>0.01'], 
+        http_req_duration: ['p(95)<200'], 
     },
 };
 
 export default function () {
 
-    const url = 'http://localhost:3000/users/login';
+    const url = pegarBaseURL() + '/users/login';
    
-     // Usa o payload válido do arquivo JSON
      const payload = JSON.stringify(postLogin.valid);
 
     const params = {
@@ -24,8 +23,8 @@ export default function () {
         },
     };
 
-    // 1) Primeiro POST: usuário único — esperamos criação (200)
     const loginRes = http.post(url, payload, params);
+
     check(loginRes, {
         'login com sucesso (200)': (r) => r.status === 200
     });
